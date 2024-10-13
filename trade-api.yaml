@@ -1,0 +1,154 @@
+openapi: 3.1.0
+info:
+  version: '0.0.1-beta'
+  title: 'Anthic Trade API'
+  description: |
+    The Anthic Trade API allows traders to view order books of various token pairs and trade against these order books.
+
+servers:
+  - url: 'https://anthic-taker-api.rdx-works-main.extratools.works'
+paths:
+  "/tokens":
+    get:
+      summary: Get Supported Tokens
+      description: Get a list of supported tokens and information about each token
+      responses:
+        '200':
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TokensResponse"
+  "/order_book":
+    get:
+      summary: Get Order Book
+      description: |
+        Get the order book of a token pair
+      parameters:
+        - in: query
+          name: base
+          schema:
+            type: string
+          description: The resource address for the base token
+        - in: query
+          name: quote
+          schema:
+            type: string
+          description: The resource address for the quote token
+      responses:
+        '200':
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderBookResponse"
+  "/orders":
+    post:
+      summary: Create a New Order
+      description: |
+        Create a new order by submitting a signed subintent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewOrderRequest"
+      responses:
+        '200':
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NewOrderResponse"
+
+components:
+  schemas:
+    TokensResponse:
+      type: object
+      required:
+        - tokens
+      properties:
+        tokens:
+          type: array
+          items:
+            $ref: "#/components/schemas/TokenDefinition"
+          description: List of support tokens
+    OrderBookResponse:
+      type: object
+      required:
+        - bids
+        - asks
+      properties:
+        pair:
+          $ref:  "#/components/schemas/TokenPair"
+        bids:
+          type: array
+          items:
+            $ref: "#/components/schemas/LimitOrder"
+        asks:
+          type: array
+          items:
+            $ref: "#/components/schemas/LimitOrder"
+    NewOrderRequest:
+      type: object
+      required:
+        - subintent
+      properties:
+        subintent:
+          $ref: "#/components/schemas/SubintentPayload"
+    NewOrderResponse:
+      type: object
+      required:
+        - success
+      properties:
+        success:
+          type: bool
+        success_response:
+          type: "#/components/schemas/NewOrderSuccessResponse"
+        error_response:
+          $ref: "#/components/schemas/NewOrderErrorResponse"
+    TokenDefinition:
+      type: object
+      required:
+        - token_identifier
+      properties:
+        symbol:
+          type: String
+        resource_address:
+          type: String
+    TokenPair:
+      type: object
+      required:
+        - base
+        - quote
+      properties:
+        base:
+          type: string
+        quote:
+          type: string
+    LimitOrder:
+      type: object
+      required:
+        - price
+        - quantity
+      properties:
+        price:
+          type: String
+        quantity:
+          type: String
+    SubintentPayload:
+      type: object
+      required:
+        - hex_bytes
+      properties:
+        price:
+          type: String
+    NewOrderSuccessResponse:
+      type: object
+    NewOrderErrorResponse:
+      type: object
+      required:
+        - reason
+      properties:
+        reason:
+          type: String
