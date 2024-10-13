@@ -19,6 +19,11 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/TokensResponse"
+              example:
+                - symbol: "XRD"
+                  resource_address: "resource_rdx1tknxxxxxxxxxradxrdxxxxxxxxx009923554798xxxxxxxxxradxrd"
+                - symbol: "xUSDC"
+                  resource_address: "resource_rdx1t4upr78guuapv5ept7d7ptekk9mqhy605zgms33mcszen8l9fac8vf"
   "/order_book":
     get:
       summary: Get Order Book
@@ -29,11 +34,13 @@ paths:
           name: base
           schema:
             type: string
+            example: "resource_rdx1tknxxxxxxxxxradxrdxxxxxxxxx009923554798xxxxxxxxxradxrd"
           description: The resource address for the base token
         - in: query
           name: quote
           schema:
             type: string
+            example: "resource_rdx1t4upr78guuapv5ept7d7ptekk9mqhy605zgms33mcszen8l9fac8vf"
           description: The resource address for the quote token
       responses:
         '200':
@@ -42,6 +49,23 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/OrderBookResponse"
+              example:
+                base: "resource_rdx1tknxxxxxxxxxradxrdxxxxxxxxx009923554798xxxxxxxxxradxrd"
+                quote: "resource_rdx1t4upr78guuapv5ept7d7ptekk9mqhy605zgms33mcszen8l9fac8vf"
+                bids:
+                  - price: "0.015"
+                    quantity: "1000"
+                  - price: "0.0146"
+                    quantity: "1500"
+                  - price: "0.01301"
+                    quantity: "3200"
+                asks:
+                  - price: "0.0155"
+                    quantity: "1000"
+                  - price: "0.017"
+                    quantity: "1200"
+
+
   "/orders":
     post:
       summary: Create a New Order
@@ -76,11 +100,15 @@ components:
     OrderBookResponse:
       type: object
       required:
+        - base
+        - quote
         - bids
         - asks
       properties:
-        pair:
-          $ref:  "#/components/schemas/TokenPair"
+        base:
+          type: string
+        quote:
+          type: string
         bids:
           type: array
           items:
@@ -116,16 +144,6 @@ components:
           type: String
         resource_address:
           type: String
-    TokenPair:
-      type: object
-      required:
-        - base
-        - quote
-      properties:
-        base:
-          type: string
-        quote:
-          type: string
     LimitOrder:
       type: object
       required:
@@ -141,7 +159,7 @@ components:
       required:
         - hex_bytes
       properties:
-        price:
+        hex_bytes:
           type: String
     NewOrderSuccessResponse:
       type: object
