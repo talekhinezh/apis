@@ -1,6 +1,6 @@
 openapi: 3.1.0
 info:
-  version: '0.0.1-beta'
+  version: '0.0.2-beta'
   title: 'Anthic Trade API'
   description: |
     The Anthic Trade API allows traders to view order books of various token pairs and trade against these order books.
@@ -120,10 +120,10 @@ components:
     NewOrderRequest:
       type: object
       required:
-        - subintent
+        - signed_partial_transaction
       properties:
-        subintent:
-          $ref: "#/components/schemas/SubintentPayload"
+        signed_partial_transaction:
+          $ref: "#/components/schemas/SignedPartialTransaction"
     NewOrderResponse:
       type: object
       required:
@@ -154,7 +154,7 @@ components:
           type: String
         quantity:
           type: String
-    SubintentPayload:
+    SignedPartialTransaction:
       type: object
       required:
         - hex_bytes
