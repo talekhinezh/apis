@@ -1,0 +1,119 @@
+openapi: 3.1.0
+info:
+  version: '0.0.1-beta'
+  title: 'Anthic Construction API'
+  description: |
+    The Anthic Construction API provides tooling for constructing, verifying, and signing subintents for Anthic order
+    submission.
+
+servers:
+  - url: 'https://anthic-taker-api.rdx-works-main.extratools.works/construction'
+paths:
+  "/compose":
+    post:
+      summary: Create a Subintent with Signable Payload
+      description: |
+        Create a subintent based on a limit order and the payload to be signed
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ComposeRequest"
+      responses:
+        '200':
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ComposeResponse"
+  "/sign":
+    post:
+      summary: Create a Signed Partial Transaction
+      description: |
+        Create a signed partial transaction from a subintent and signature
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SignRequest"
+      responses:
+        '200':
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SignResponse"
+
+
+components:
+  schemas:
+    ComposeRequest:
+      discriminator:
+        propertyName: type
+      oneOf:
+        - $ref: '#/components/schemas/ComposeLimitOrder'
+    ComposeResponse:
+      type: object
+      required:
+        - unsigned_subintent
+        - payload_to_sign
+      properties:
+        unsigned_subintent:
+          type: string
+        payload_to_sign:
+          $ref: "#/components/schemas/PayloadToSign"
+    SignRequest:
+      type: object
+      required:
+        - unsigned_subintent
+        - signature
+      properties:
+        unsigned_subintent:
+          type: string
+        signature:
+          type: string
+    SignResponse:
+      type: object
+      required:
+        - signed_partial_transaction
+      properties:
+        signed_partial_transaction:
+          type: string
+    ComposeLimitOrder:
+      type: object
+      required:
+        - type
+        - account
+        - buy
+        - sell
+        - id
+      properties:
+        type:
+          type: string
+        account:
+          type: string
+        buy:
+          $ref: "#/components/schemas/ResourceAmount"
+        sell:
+          $ref: "#/components/schemas/ResourceAmount"
+        id:
+          type: number
+    ResourceAmount:
+      type: object
+      required:
+        - resource_address
+        - amount
+      properties:
+        resource_address:
+          type: string
+        amount:
+          type: string
+    PayloadToSign:
+      type: object
+      required:
+        - hex_bytes
+      properties:
+        hex_bytes:
+          type: string
