@@ -20,6 +20,16 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/ComposeRequest"
+            example:
+              type: "LimitOrder"
+              account: "account_sim12xsvygvltz4uhsht6tdrfxktzpmnl77r0d40j8agmujgdj025mrvx2"
+              buy:
+                resource: "resource_sim1t46kz5luvdz6rugagxx7ksst22xud8nj3mmldh2d92tvxsgd9pz9p0"
+                amount: "1.5"
+              sell:
+                resource: "resource_sim1tkktsemn6sx6fkfxt8jgykw4c9nh9q59pdlm30q5jqz27fn9awrqy7"
+                amount: "3200"
+              id: 101
       responses:
         '200':
           description: A successful response.
@@ -27,6 +37,11 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ComposeResponse"
+              example:
+                unsigned_subintent: "4d21012105210607f20a00000000000000000a64000000000000002200002200000a65000000000000002020002200002020002022074103800051a0c2219f58abcbc2ebd2da349acb10773ffbc37b6af91fa8df2486c9ea0c087769746864726177210280005dacb86773d40da4d92659e48259d5c1677282850b7fb8bc149004af26658500000062acc5eb78ad000000000000000000000000000000020180005dacb86773d40da4d92659e48259d5c1677282850b7fb8bc149004af26650c0281000000002201018500000062acc5eb78ad0000000000000000000000000000000a0123802201005d756153fc6345a1f11d418deb420b528dc69e728ef7f6dd4d2a96c3410d0201850000167b0d12d114000000000000000000000000000000006001210181000000004103800051a0c2219f58abcbc2ebd2da349acb10773ffbc37b6af91fa8df2486c9ea0c0d6465706f7369745f62617463682101830060012100"
+                payload_to_sign:
+                  hex_bytes: "nothing-here-yet"
+
   "/sign":
     post:
       summary: Create a Signed Partial Transaction
@@ -38,6 +53,9 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/SignRequest"
+            example:
+              unsigned_subintent: "4d21012105210607f20a00000000000000000a64000000000000002200002200000a65000000000000002020002200002020002022074103800051a0c2219f58abcbc2ebd2da349acb10773ffbc37b6af91fa8df2486c9ea0c087769746864726177210280005dacb86773d40da4d92659e48259d5c1677282850b7fb8bc149004af26658500000062acc5eb78ad000000000000000000000000000000020180005dacb86773d40da4d92659e48259d5c1677282850b7fb8bc149004af26650c0281000000002201018500000062acc5eb78ad0000000000000000000000000000000a0123802201005d756153fc6345a1f11d418deb420b528dc69e728ef7f6dd4d2a96c3410d0201850000167b0d12d114000000000000000000000000000000006001210181000000004103800051a0c2219f58abcbc2ebd2da349acb10773ffbc37b6af91fa8df2486c9ea0c0d6465706f7369745f62617463682101830060012100"
+              signature: "nothing-here-yet"
       responses:
         '200':
           description: A successful response.
@@ -45,7 +63,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/SignResponse"
-
+              example:
+                signed_partial_transaction: "4d2103210221012105210607f20a00000000000000000a64000000000000002200002200000ae9030000000000002020002200002020002022074103800051a0c2219f58abcbc2ebd2da349acb10773ffbc37b6af91fa8df2486c9ea0c087769746864726177210280005dacb86773d40da4d92659e48259d5c1677282850b7fb8bc149004af266585000064a7b3b6e00d00000000000000000000000000000000020180005dacb86773d40da4d92659e48259d5c1677282850b7fb8bc149004af26650c02810000000022010185000064a7b3b6e00d000000000000000000000000000000000a0123802201005d756153fc6345a1f11d418deb420b528dc69e728ef7f6dd4d2a96c3410d02018500a0724e18090000000000000000000000000000000000006001210181000000004103800051a0c2219f58abcbc2ebd2da349acb10773ffbc37b6af91fa8df2486c9ea0c0d6465706f7369745f62617463682101830060012100202100202200202000"
 
 components:
   schemas:
@@ -53,7 +72,8 @@ components:
       discriminator:
         propertyName: type
       oneOf:
-        - $ref: '#/components/schemas/ComposeLimitOrder'
+        - $ref: '#/components/schemas/LimitOrder'
+
     ComposeResponse:
       type: object
       required:
@@ -81,7 +101,7 @@ components:
       properties:
         signed_partial_transaction:
           type: string
-    ComposeLimitOrder:
+    LimitOrder:
       type: object
       required:
         - type
