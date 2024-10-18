@@ -1,6 +1,6 @@
 openapi: 3.1.0
 info:
-  version: '0.0.2-beta'
+  version: '0.0.3-beta'
   title: 'Anthic Trade API'
   description: |
     The Anthic Trade API allows traders to view order books of various token pairs and trade against these order books.
@@ -50,8 +50,9 @@ paths:
               schema:
                 $ref: "#/components/schemas/OrderBookResponse"
               example:
-                base: "resource_rdx1tknxxxxxxxxxradxrdxxxxxxxxx009923554798xxxxxxxxxradxrd"
-                quote: "resource_rdx1t4upr78guuapv5ept7d7ptekk9mqhy605zgms33mcszen8l9fac8vf"
+                pair:
+                  base: "resource_rdx1tknxxxxxxxxxradxrdxxxxxxxxx009923554798xxxxxxxxxradxrd"
+                  quote: "resource_rdx1t4upr78guuapv5ept7d7ptekk9mqhy605zgms33mcszen8l9fac8vf"
                 bids:
                   - price: "0.015"
                     quantity: "1000"
@@ -64,26 +65,24 @@ paths:
                     quantity: "1000"
                   - price: "0.017"
                     quantity: "1200"
-
-
   "/orders":
     post:
-      summary: Create a New Order
+      summary: Submit an Order
       description: |
-        Create a new order by submitting a signed subintent
+        Submit an order to be filled and executed on-ledger
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/NewOrderRequest"
+              $ref: "#/components/schemas/SubmitOrderRequest"
       responses:
         '200':
           description: A successful response.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/NewOrderResponse"
+                $ref: "#/components/schemas/SubmitOrderResponse"
 
 components:
   schemas:
@@ -100,15 +99,14 @@ components:
     OrderBookResponse:
       type: object
       required:
+        - pair
         - base
         - quote
         - bids
         - asks
       properties:
-        base:
-          type: string
-        quote:
-          type: string
+        pair:
+          $ref: "#/components/schemas/TokenPair"
         bids:
           type: array
           items:
@@ -117,14 +115,14 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/LimitOrder"
-    NewOrderRequest:
+    SubmitOrderRequest:
       type: object
       required:
         - signed_partial_transaction
       properties:
         signed_partial_transaction:
-          $ref: "#/components/schemas/SignedPartialTransaction"
-    NewOrderResponse:
+          type: string
+    SubmitOrderResponse:
       type: object
       required:
         - success
@@ -137,13 +135,21 @@ components:
           $ref: "#/components/schemas/NewOrderErrorResponse"
     TokenDefinition:
       type: object
-      required:
-        - token_identifier
       properties:
         symbol:
           type: String
         resource_address:
           type: String
+    TokenPair:
+      type: object
+      required:
+        - base
+        - quote
+      properties:
+        base:
+          type: string
+        quote:
+          type: string
     LimitOrder:
       type: object
       required:
@@ -153,13 +159,6 @@ components:
         price:
           type: String
         quantity:
-          type: String
-    SignedPartialTransaction:
-      type: object
-      required:
-        - hex_bytes
-      properties:
-        hex_bytes:
           type: String
     NewOrderSuccessResponse:
       type: object

@@ -1,6 +1,6 @@
 openapi: 3.1.0
 info:
-  version: '0.0.1-beta'
+  version: '0.0.2-beta'
   title: 'Anthic Construction API'
   description: |
     The Anthic Construction API provides tooling for constructing, verifying, and signing subintents for Anthic order
@@ -24,10 +24,10 @@ paths:
               type: "LimitOrder"
               account: "account_sim12xsvygvltz4uhsht6tdrfxktzpmnl77r0d40j8agmujgdj025mrvx2"
               buy:
-                resource: "resource_sim1t46kz5luvdz6rugagxx7ksst22xud8nj3mmldh2d92tvxsgd9pz9p0"
+                resource_address: "resource_sim1t46kz5luvdz6rugagxx7ksst22xud8nj3mmldh2d92tvxsgd9pz9p0"
                 amount: "1.5"
               sell:
-                resource: "resource_sim1tkktsemn6sx6fkfxt8jgykw4c9nh9q59pdlm30q5jqz27fn9awrqy7"
+                resource_address: "resource_sim1tkktsemn6sx6fkfxt8jgykw4c9nh9q59pdlm30q5jqz27fn9awrqy7"
                 amount: "3200"
               id: 101
       responses:
@@ -118,6 +118,8 @@ components:
           $ref: "#/components/schemas/ResourceAmount"
         sell:
           $ref: "#/components/schemas/ResourceAmount"
+        use_instamint:
+          type: bool
         id:
           type: number
     ResourceAmount:
