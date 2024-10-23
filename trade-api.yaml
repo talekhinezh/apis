@@ -6,7 +6,7 @@ info:
     The Anthic Trade API allows traders to view order books of various token pairs and trade against these order books.
 
 servers:
-  - url: 'https://anthic-taker-api.rdx-works-main.extratools.works/trade'
+  - url: 'https://taker-api.staging.anthic.io/trade'
 paths:
   "/tokens":
     get:

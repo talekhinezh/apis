@@ -7,7 +7,7 @@ info:
     submission.
 
 servers:
-  - url: 'https://anthic-taker-api.rdx-works-main.extratools.works/construction'
+  - url: 'https://taker-api.staging.anthic.io/construction'
 paths:
   "/compose":
     post:
