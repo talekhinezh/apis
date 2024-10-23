@@ -1,6 +1,6 @@
 openapi: 3.1.0
 info:
-  version: '0.0.2-beta'
+  version: '0.0.3-beta'
   title: 'Anthic Construction API'
   description: |
     The Anthic Construction API provides tooling for constructing, verifying, and signing subintents for Anthic order
@@ -24,10 +24,10 @@ paths:
               type: "LimitOrder"
               account: "account_sim12xsvygvltz4uhsht6tdrfxktzpmnl77r0d40j8agmujgdj025mrvx2"
               buy:
-                resource_address: "resource_sim1t46kz5luvdz6rugagxx7ksst22xud8nj3mmldh2d92tvxsgd9pz9p0"
+                symbol: "XRD"
                 amount: "1.5"
               sell:
-                resource_address: "resource_sim1tkktsemn6sx6fkfxt8jgykw4c9nh9q59pdlm30q5jqz27fn9awrqy7"
+                symbol: "xUSDC"
                 amount: "3200"
               id: 101
       responses:
@@ -41,6 +41,38 @@ paths:
                 unsigned_subintent: "4d21012105210607f20a00000000000000000a64000000000000002200002200000a65000000000000002020002200002020002022074103800051a0c2219f58abcbc2ebd2da349acb10773ffbc37b6af91fa8df2486c9ea0c087769746864726177210280005dacb86773d40da4d92659e48259d5c1677282850b7fb8bc149004af26658500000062acc5eb78ad000000000000000000000000000000020180005dacb86773d40da4d92659e48259d5c1677282850b7fb8bc149004af26650c0281000000002201018500000062acc5eb78ad0000000000000000000000000000000a0123802201005d756153fc6345a1f11d418deb420b528dc69e728ef7f6dd4d2a96c3410d0201850000167b0d12d114000000000000000000000000000000006001210181000000004103800051a0c2219f58abcbc2ebd2da349acb10773ffbc37b6af91fa8df2486c9ea0c0d6465706f7369745f62617463682101830060012100"
                 payload_to_sign:
                   hex_bytes: "nothing-here-yet"
+
+  "/parse":
+    post:
+      summary: Parse an unsigned Subintent
+      description: |
+        Parse an unsigned subintent into an anthic limit order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ParseRequest"
+            example:
+              unsigned_subintent: "4d21012105210607f20a00000000000000000a64000000000000002200002200000a65000000000000002020002200002020002022074103800051a0c2219f58abcbc2ebd2da349acb10773ffbc37b6af91fa8df2486c9ea0c087769746864726177210280005dacb86773d40da4d92659e48259d5c1677282850b7fb8bc149004af26658500000062acc5eb78ad000000000000000000000000000000020180005dacb86773d40da4d92659e48259d5c1677282850b7fb8bc149004af26650c0281000000002201018500000062acc5eb78ad0000000000000000000000000000000a0123802201005d756153fc6345a1f11d418deb420b528dc69e728ef7f6dd4d2a96c3410d0201850000167b0d12d114000000000000000000000000000000006001210181000000004103800051a0c2219f58abcbc2ebd2da349acb10773ffbc37b6af91fa8df2486c9ea0c0d6465706f7369745f62617463682101830060012100"
+
+      responses:
+        '200':
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ParseResponse"
+              example:
+                type: "LimitOrder"
+                account: "account_sim12xsvygvltz4uhsht6tdrfxktzpmnl77r0d40j8agmujgdj025mrvx2"
+                buy:
+                  symbol: "XRD"
+                  amount: "1.5"
+                sell:
+                  symbol: "xUSDC"
+                  amount: "3200"
+                id: 101
 
   "/sign":
     post:
@@ -73,7 +105,6 @@ components:
         propertyName: type
       oneOf:
         - $ref: '#/components/schemas/LimitOrder'
-
     ComposeResponse:
       type: object
       required:
@@ -84,6 +115,18 @@ components:
           type: string
         payload_to_sign:
           $ref: "#/components/schemas/PayloadToSign"
+    ParseRequest:
+      type: object
+      required:
+        - unsigned_subintent
+      properties:
+        unsigned_subintent:
+          type: string
+    ParseResponse:
+      discriminator:
+        propertyName: type
+      oneOf:
+        - $ref: '#/components/schemas/LimitOrder'
     SignRequest:
       type: object
       required:
