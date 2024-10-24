@@ -220,12 +220,9 @@ components:
       type: object
       required:
         - address
-        - instamint_credit
         - balances
       properties:
         address:
-          type: string
-        instamint_credit:
           type: string
         balances:
           type: array

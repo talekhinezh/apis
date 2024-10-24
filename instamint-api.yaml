@@ -1,0 +1,92 @@
+openapi: 3.1.0
+info:
+  version: '0.0.1-beta'
+  title: 'Anthic Instamint API'
+  description: |
+    The Anthic Instamint API allows instamint users to view their remaining credit and outstanding loans
+
+servers:
+  - url: 'https://taker-api.staging.anthic.io/instamint'
+paths:
+  "/accounts":
+    get:
+      summary: Get Accounts
+      description: |
+        Retrieve info about the current user's accounts. Must be authenticated.
+      responses:
+        '200':
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InstamintAccountsResponse"
+              example:
+                accounts:
+                  - address: "account_sim129xwdvs4d0emqzcvqcgldl2knx8t3nkqw3wv70007urjvx6p7nmamq"
+                    instamint_credit: "99972.09"
+                    unreconciled_loans:
+                      - symbol: "xUSDT"
+                        balance: "0.001"
+                    payback_addresses:
+                      - chain: "Radix"
+                        address: "account_sim129yh7eurc3yma3hhjymjrjf0wguz2kx7pa6l9y5kaesvskjn6j4myw"
+
+components:
+  schemas:
+    InstamintAccountsResponse:
+      type: object
+      required:
+        - accounts
+      properties:
+        accounts:
+          type: array
+          items:
+            $ref: "#/components/schemas/InstamintAccount"
+    InstamintAccount:
+      type: object
+      required:
+        - address
+        - instamint_credit
+        - unreconciled_loans
+        - payback_addresses
+      properties:
+        address:
+          type: string
+        instamint_credit:
+          type: string
+        unreconciled_loans:
+          type: array
+          items:
+            $ref: "#/components/schemas/ResourceBalance"
+        payback_addresses:
+    ResourceBalance:
+      type: object
+      required:
+        - symbol
+        - balance
+      properties:
+        symbol:
+          type: string
+        balance:
+          type: string
+    InstamintPaybackAddresses:
+      type: object
+      required:
+        - addresses
+      properties:
+        addresses:
+          type: array
+          items:
+            $ref: "#/components/schemas/InstamintPaybackAddress"
+    InstamintPaybackAddress:
+      type: object
+      required:
+        - chain
+        - address
+      properties:
+        chain:
+          type: string
+        address:
+          type: string
+
+
