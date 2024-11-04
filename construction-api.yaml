@@ -1,6 +1,6 @@
 openapi: 3.1.0
 info:
-  version: '0.0.3-beta'
+  version: '0.0.5-beta'
   title: 'Anthic Construction API'
   description: |
     The Anthic Construction API provides tooling for constructing, verifying, and signing subintents for Anthic order
@@ -151,6 +151,7 @@ components:
         - account
         - buy
         - sell
+        - expiry_timestamp,
         - id
       properties:
         type:
@@ -163,6 +164,8 @@ components:
           $ref: "#/components/schemas/ResourceAmount"
         use_instamint:
           type: bool
+        expiry_timestamp:
+          type: number
         id:
           type: number
     ResourceAmount:
@@ -182,3 +185,28 @@ components:
       properties:
         hex_bytes:
           type: string
+    Signature:
+      discriminator:
+        propertyName: type
+      oneOf:
+        - $ref: '#/components/schemas/Ed25519Signature'
+        - $ref: '#/components/schemas/Secp256k1Signature'
+    Ed25519Signature:
+      type: object
+      required:
+        type:
+          type: string
+        public_key:
+          type: string
+        hex_bytes:
+          type: string
+    Secp256k1Signature:
+      type: object
+      required:
+        type:
+          type: string
+        public_key:
+          type: string
+        hex_bytes:
+          type: string
+
